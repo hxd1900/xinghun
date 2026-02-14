@@ -1,0 +1,83 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color-scheme: dark;
+}
+
+body {
+  @apply bg-dark-900 text-gray-200 min-h-screen;
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+#root {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* Background Animation */
+@keyframes float {
+  0% { transform: translateY(0px) rotate(0deg); opacity: 0.3; }
+  50% { transform: translateY(-20px) rotate(5deg); opacity: 0.6; }
+  100% { transform: translateY(0px) rotate(0deg); opacity: 0.3; }
+}
+
+.bg-animate-particle {
+  position: absolute;
+  background: radial-gradient(circle, rgba(59,130,246,0.15) 0%, rgba(0,0,0,0) 70%);
+  border-radius: 50%;
+  animation: float 8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* Custom range slider styling for minimalist look */
+input[type=range] {
+  -webkit-appearance: none;
+  width: 100%;
+  background: transparent;
+  padding: 10px 0; /* Increase touch area vertically */
+  cursor: pointer;
+}
+
+/* Track styling */
+input[type=range]::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 6px; /* Slightly thicker track */
+  cursor: pointer;
+  background: #404040;
+  border-radius: 3px;
+}
+
+/* Thumb styling - Increased size for better touch target */
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 28px; /* Larger thumb for touch */
+  width: 28px;
+  border-radius: 50%;
+  background: #ffffff;
+  cursor: pointer;
+  margin-top: -11px; /* Center the thumb on the track (height difference / 2 + track height / 2) */
+  box-shadow: 0 0 15px rgba(255,255,255,0.6);
+  border: 4px solid rgba(59,130,246,0.1); /* Subtle border to indicate touch area */
+  transition: transform 0.1s ease;
+}
+
+input[type=range]:active::-webkit-slider-thumb {
+  transform: scale(1.1);
+  background: #3b82f6; /* Highlight color on press */
+  box-shadow: 0 0 20px rgba(59,130,246,0.8);
+}
+
+input[type=range]:focus {
+  outline: none;
+}
