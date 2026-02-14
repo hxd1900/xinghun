@@ -4,11 +4,14 @@ const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 
 const app = express();
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+// Serve static files from dist directory (production)
+app.use(express.static(path.join(__dirname, '../dist')));
 
 // Database Setup
 const dbPath = path.resolve(__dirname, 'xinghun.db');
@@ -60,9 +63,12 @@ const db = new sqlite3.Database(dbPath, (err) => {
 
 // API Routes
 
-// Root path - Admin Dashboard
+// Root path - Serve frontend in production, show admin entry in dev
 app.get('/', (req, res) => {
-  const html = `
+  if (process.env.NODE_ENV === 'production') {
+    res.sendFile(path.join(__dirname, '../dist/index.html'));
+  } else {
+    const html = `
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -207,7 +213,7 @@ app.get('/', (req, res) => {
       </div>
       <h1>形婚难度测算</h1>
       <p>欢迎使用数据管理后台，查看用户提交的数据统计和分析。</p>
-      <a href="http://localhost:5173/admin" class="btn">
+      <a href="/admin" class="btn">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="3"></circle>
           <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
@@ -232,14 +238,15 @@ app.get('/', (req, res) => {
       </div>
     </div>
     <div class="links">
-      <a href="http://localhost:5173/" class="link">前端首页</a>
-      <a href="http://localhost:5173/admin" class="link">数据管理</a>
+      <a href="/" class="link">前端首页</a>
+      <a href="/admin" class="link">数据管理</a>
     </div>
   </div>
 </body>
 </html>
   `;
-  res.send(html);
+    res.send(html);
+  }
 });
 
 // 1. Submit Profile
@@ -440,6 +447,11 @@ app.get('/api/profiles/all', (req, res) => {
       res.status(400).json({ error: err.message });
     }
   })();
+});
+
+// Catch-all: Serve frontend for any non-API routes
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../dist/index.html'));
 });
 
 app.listen(PORT, () => {

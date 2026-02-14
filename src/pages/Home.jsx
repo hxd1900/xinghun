@@ -434,7 +434,7 @@ function HomePage() {
 
       // Submit data to backend
       try {
-        const apiBase = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+        const apiBase = import.meta.env.VITE_API_BASE_URL || (import.meta.env.DEV ? 'http://localhost:3001' : '');
         await axios.post(`${apiBase}/api/profiles`, {
           ...profile,
           difficultyScore,

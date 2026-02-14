@@ -45,7 +45,7 @@ function Admin() {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const apiBase = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+      const apiBase = import.meta.env.VITE_API_BASE_URL || (import.meta.env.DEV ? 'http://localhost:3001' : '');
       const [statsRes, profilesRes] = await Promise.all([
         axios.get(`${apiBase}/api/stats`),
         axios.get(`${apiBase}/api/profiles`)
@@ -63,7 +63,7 @@ function Admin() {
 
   const handleExport = async () => {
     try {
-      const apiBase = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+      const apiBase = import.meta.env.VITE_API_BASE_URL || (import.meta.env.DEV ? 'http://localhost:3001' : '');
       const res = await axios.get(`${apiBase}/api/profiles/all`);
       const allProfiles = res.data.data;
 
